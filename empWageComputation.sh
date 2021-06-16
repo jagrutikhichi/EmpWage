@@ -1,35 +1,39 @@
 #! /bin/bash -x
 
-echo "Welcome to EmpwageComputation"
+declare -a dailyWages
 
-a=$(( RANDOM % 2 ))
-
-if [ $a -eq 1 ]
-then
-        echo "emp present"
-else
-        echo "emp absent"
-fi
-
-#partime full time
-
-
-IS_PRESENT_FULL_TIME=1
-IS_PRESENT_HALF_TIME=2
+IS_PRESENT_FULL=1
+IS_PRESENT_HALF=2
 EMP_WAGE_PER_HR=20
+MAX_WORKING_DAY=20
+MAX_WORKING_HR=80
 
-a=$(( RANDOM % 3 ))
+totalWorkingHrs=0
 
-if [ $a -eq $IS_PRESENT_FULL_TIME ]
-then
-        empHrs=8
+day=1
 
-elif [ $a -eq $IS_PRESENT_HALF_TIME ]
-then
-        empHrs=4
-else
-        empHrs=0
-fi
- salary=$(( empHrs * EMP_WAGE_PER_HR ))
+ function getWorkHrs() {
+        local empCheck=$1
+         case $empCheck in
+                $IS_PRESENT_FULL) empHrs=8 ;;
+                $IS_PRESENT_HALF) empHrs=4 ;;
+                *) empHrs=0
+        esac
+                echo $empHrs
 
+        }
+
+
+while [ $day -le $MAX_WORKING_DAY ] && [ $totalWorkingHrs -le $MAX_WORKING_HR ]
+do
+        empCheck=$((RANDOM%3))
+        empHrs="$( getWorkHrs $empCheck )"
+        #((day++))
+        totalWorkingHrs=$((totalWorkingHrs + empHrs ))
+        salary=$(( empHrs * EMP_WAGE_PER_HR ))
+        dailyWages[((day++))]=$salary
+done
+totalSalary=$(( totalWorkingHrs * EMP_WAGE_PER_HR ))
+echo $totalSalary
+echo salary:${dailyWages[*]}
 
